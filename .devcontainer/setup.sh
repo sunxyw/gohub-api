@@ -1,6 +1,6 @@
 # install curl, git, ...
 apt-get update
-apt-get install -y curl git jq zsh
+apt-get install -y curl git jq zsh gcc
 
 useradd -m user
 su user
@@ -23,7 +23,7 @@ go get -u golang.org/x/tools/gopls
 go get -u github.com/go-delve/delve/cmd/dlv
 go get -u github.com/rakyll/hey
 
-# vscode-go dependencies 
+# vscode-go dependencies
 echo "Getting dependencies for the vscode-go plugin "
 # via: https://github.com/microsoft/vscode-go/blob/master/.travis.yml
 go get -u -v github.com/acroca/go-symbols
