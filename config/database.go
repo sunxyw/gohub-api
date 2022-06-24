@@ -29,7 +29,7 @@ func init() {
 			},
 
 			"sqlite": map[string]interface{}{
-				"database": config.Env("DB_SQL_FILE", "database/database.db"),
+				"database": config.Env("DB_SQL_FILE", "storage/database.db"),
 			},
 		}
 	})
