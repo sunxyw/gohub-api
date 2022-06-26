@@ -50,7 +50,7 @@ func (sc *SignupController) SignupUsingPhone(c *gin.Context) {
 		return
 	}
 
-	// 2. 验证成功，创建数据
+	// 2. 验证成功，创建数据s
 	userModel := user.User{
 		Name:     request.Name,
 		Phone:    request.Phone,
