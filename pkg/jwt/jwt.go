@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	jwtpkg "github.com/golang-jwt/jwt"
+	jwtpkg "github.com/golang-jwt/jwt/v4"
 )
 
 var (
