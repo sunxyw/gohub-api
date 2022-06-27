@@ -59,6 +59,7 @@ func RegisterAPIRoutes(r *gin.Engine) {
 				usersGroup.GET("", uc.Index)
 				usersGroup.PUT("", middlewares.AuthJWT(), uc.UpdateProfile)
 				usersGroup.PATCH("/email", middlewares.AuthJWT(), uc.UpdateEmail)
+				usersGroup.PATCH("/phone", middlewares.AuthJWT(), uc.UpdatePhone)
 			}
 		}
 
