@@ -1,6 +1,7 @@
 package user
 
 import (
+	"gohub/pkg/app"
 	"gohub/pkg/database"
 	"gohub/pkg/paginator"
 
