@@ -6,7 +6,7 @@ useradd -m user
 su user
 
 # install go
-VERSION='1.17'
+VERSION='1.18'
 OS='linux'
 ARCH='amd64'
 
