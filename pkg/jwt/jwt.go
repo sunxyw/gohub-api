@@ -162,7 +162,14 @@ func (jwt *JWT) IssueToken(userID string, userName string) string {
 }
 
 // RevokeToken 注销 Token，在登出时调用
-func (jwt *JWT) RevokeToken(tokenString string) error {
+func (jwt *JWT) RevokeToken(c *gin.Context) error {
+
+	// 从 Header 里获取 token
+	tokenString, parseErr := jwt.getTokenFromHeader(c)
+	if parseErr != nil {
+		return parseErr
+	}
+
 	// 解析 Token
 	token, err := jwt.parseTokenString(tokenString)
 

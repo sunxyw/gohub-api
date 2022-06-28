@@ -37,6 +37,7 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			authGroup.POST("/login/using-phone", middlewares.GuestJWT(), lgc.LoginByPhone)
 			authGroup.POST("/login/using-password", middlewares.GuestJWT(), lgc.LoginByPassword)
 			authGroup.POST("/login/refresh-token", middlewares.AuthJWT(), lgc.RefreshToken)
+			authGroup.POST("/logout", middlewares.AuthJWT(), lgc.Logout)
 
 			// 重置密码
 			pwc := new(auth.PasswordController)

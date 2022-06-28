@@ -74,3 +74,8 @@ func (lc *LoginController) RefreshToken(c *gin.Context) {
 		})
 	}
 }
+
+func (lc *LoginController) Logout(c *gin.Context) {
+	jwt.NewJWT().RevokeToken(c)
+	response.Success(c)
+}
