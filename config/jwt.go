@@ -6,9 +6,6 @@ func init() {
 	config.Add("jwt", func() map[string]interface{} {
 		return map[string]interface{}{
 
-			// 使用 config.GetString("app.key")
-			// "signing_key":
-
 			// 过期时间，单位是分钟，一般不超过两个小时
 			"expire_time": config.Env("JWT_EXPIRE_TIME", 120),
 
@@ -17,6 +14,9 @@ func init() {
 
 			// debug 模式下的过期时间，方便本地开发调试
 			"debug_expire_time": 86400,
+
+			// 启用黑名单，允许从服务端登出用户
+			"enable_blacklist": config.Env("JWT_ENABLE_BLACKLIST", false),
 		}
 	})
 }

@@ -4,6 +4,7 @@ package jwt
 import (
 	"errors"
 	"gohub/pkg/app"
+	"gohub/pkg/cache"
 	"gohub/pkg/config"
 	"gohub/pkg/logger"
 	"strings"
@@ -34,9 +35,8 @@ type JWT struct {
 
 // JWTCustomClaims 自定义载荷
 type JWTCustomClaims struct {
-	UserID       string `json:"user_id"`
-	UserName     string `json:"user_name"`
-	ExpireAtTime int64  `json:"expire_time"`
+	UserID   string `json:"user_id"`
+	UserName string `json:"user_name"`
 
 	// StandardClaims 结构体实现了 Claims 接口继承了  Valid() 方法
 	// JWT 规定了7个官方字段，提供使用:
@@ -47,7 +47,7 @@ type JWTCustomClaims struct {
 	// - aud (audience)：观众，相当于接受者
 	// - nbf (Not Before)：生效时间
 	// - jti (JWT ID)：编号
-	jwtpkg.StandardClaims
+	jwtpkg.RegisteredClaims
 }
 
 func NewJWT() *JWT {
@@ -57,8 +57,8 @@ func NewJWT() *JWT {
 	}
 }
 
-// ParserToken 解析 Token，中间件中调用
-func (jwt *JWT) ParserToken(c *gin.Context) (*JWTCustomClaims, error) {
+// ParseToken 解析 Token，中间件中调用
+func (jwt *JWT) ParseToken(c *gin.Context) (*JWTCustomClaims, error) {
 
 	tokenString, parseErr := jwt.getTokenFromHeader(c)
 	if parseErr != nil {
@@ -113,11 +113,16 @@ func (jwt *JWT) RefreshToken(c *gin.Context) (string, error) {
 	// 4. 解析 JWTCustomClaims 的数据
 	claims := token.Claims.(*JWTCustomClaims)
 
+	// 检查 Token 是否已注销
+	if jwt.checkBlacklist(jwt.getTokenId(claims)) {
+		return "", ErrTokenInvalid
+	}
+
 	// 5. 检查是否过了『最大允许刷新的时间』
 	x := app.TimenowInTimezone().Add(-jwt.MaxRefresh).Unix()
-	if claims.IssuedAt > x {
+	if claims.IssuedAt.Unix() > x {
 		// 修改过期时间
-		claims.StandardClaims.ExpiresAt = jwt.expireAtTime()
+		claims.RegisteredClaims.ExpiresAt = jwt.expireAtTime()
 		return jwt.createToken(*claims)
 	}
 
@@ -132,12 +137,11 @@ func (jwt *JWT) IssueToken(userID string, userName string) string {
 	claims := JWTCustomClaims{
 		userID,
 		userName,
-		expireAtTime,
-		jwtpkg.StandardClaims{
-			NotBefore: app.TimenowInTimezone().Unix(), // 签名生效时间
-			IssuedAt:  app.TimenowInTimezone().Unix(), // 首次签名时间（后续刷新 Token 不会更新）
-			ExpiresAt: expireAtTime,                   // 签名过期时间
-			Issuer:    config.GetString("app.name"),   // 签名颁发者
+		jwtpkg.RegisteredClaims{
+			NotBefore: jwtpkg.NewNumericDate(app.TimenowInTimezone()), // 签名生效时间
+			IssuedAt:  jwtpkg.NewNumericDate(app.TimenowInTimezone()), // 首次签名时间（后续刷新 Token 不会更新）
+			ExpiresAt: expireAtTime,                                   // 签名过期时间
+			Issuer:    config.GetString("app.name"),                   // 签名颁发者
 		},
 	}
 
@@ -151,6 +155,50 @@ func (jwt *JWT) IssueToken(userID string, userName string) string {
 	return token
 }
 
+// RevokeToken 注销 Token，在登出时调用
+func (jwt *JWT) RevokeToken(tokenString string) error {
+	// 解析 Token
+	token, err := jwt.parseTokenString(tokenString)
+
+	if err != nil {
+		validationErr, ok := err.(*jwtpkg.ValidationError)
+		if ok {
+			if validationErr.Errors == jwtpkg.ValidationErrorMalformed {
+				return ErrTokenMalformed
+			} else if validationErr.Errors == jwtpkg.ValidationErrorExpired {
+				return ErrTokenExpired
+			}
+		}
+		return ErrTokenInvalid
+	}
+
+	// 获取 key 和过期时间
+	claims := token.Claims.(*JWTCustomClaims)
+	key := jwt.getTokenId(claims)
+	expired := claims.ExpiresAt.Unix()
+
+	// 获取距离过期剩余的分钟数
+	minutes := int64(expired-app.TimenowInTimezone().Unix()) / 60
+
+	// 添加入黑名单
+	cache.Set("jwt:blacklist:"+key, true, time.Duration(minutes)*time.Minute)
+
+	return nil
+}
+
+// getTokenId 获取 token 的 key
+func (jwt *JWT) getTokenId(claims *JWTCustomClaims) string {
+	return claims.ID
+}
+
+// checkBlacklist 检查 Token 是否在黑名单中
+func (jwt *JWT) checkBlacklist(key string) bool {
+	if ok := cache.Get("jwt:blacklist:" + key); ok != nil {
+		return true
+	}
+	return false
+}
+
 // createToken 创建 Token，内部使用，外部请调用 IssueToken
 func (jwt *JWT) createToken(claims JWTCustomClaims) (string, error) {
 	// 使用HS256算法进行token生成
@@ -159,7 +207,7 @@ func (jwt *JWT) createToken(claims JWTCustomClaims) (string, error) {
 }
 
 // expireAtTime 过期时间
-func (jwt *JWT) expireAtTime() int64 {
+func (jwt *JWT) expireAtTime() *jwtpkg.NumericDate {
 	timenow := app.TimenowInTimezone()
 
 	var expireTime int64
@@ -170,7 +218,7 @@ func (jwt *JWT) expireAtTime() int64 {
 	}
 
 	expire := time.Duration(expireTime) * time.Minute
-	return timenow.Add(expire).Unix()
+	return jwtpkg.NewNumericDate(timenow.Add(expire))
 }
 
 // parseTokenString 使用 jwtpkg.ParseWithClaims 解析 Token
