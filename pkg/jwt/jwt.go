@@ -83,6 +83,12 @@ func (jwt *JWT) ParseToken(c *gin.Context) (*JWTCustomClaims, error) {
 
 	// 3. 将 token 中的 claims 信息解析出来和 JWTCustomClaims 数据结构进行校验
 	if claims, ok := token.Claims.(*JWTCustomClaims); ok && token.Valid {
+
+		// 检查 Token 是否已注销
+		if jwt.checkBlacklist(jwt.getTokenId(claims)) {
+			return nil, ErrTokenInvalid
+		}
+
 		return claims, nil
 	}
 
