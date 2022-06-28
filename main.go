@@ -8,6 +8,7 @@ import (
 	btsConig "gohub/config"
 	"gohub/pkg/config"
 	"gohub/pkg/console"
+	"gohub/pkg/firebase"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -43,6 +44,9 @@ func main() {
 
 			// 初始化缓存
 			bootstrap.SetupCache()
+
+			// 初始化 Firebase
+			firebase.InitFirebase()
 		},
 	}
 
