@@ -15,7 +15,7 @@ func AuthJWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		// 从标头 Authorization:Bearer xxxxx 中获取信息，并验证 JWT 的准确性
-		claims, err := jwt.NewJWT().ParseToken(c)
+		uid, err := jwt.ParseHeaderToken(c)
 
 		// JWT 解析失败，有错误发生
 		if err != nil {
@@ -24,7 +24,7 @@ func AuthJWT() gin.HandlerFunc {
 		}
 
 		// JWT 解析成功，设置用户信息
-		userModel := user.Get(claims.UserID)
+		userModel := user.Get(uid)
 		if userModel.ID == 0 {
 			response.Unauthorized(c, "找不到对应用户，用户可能已删除")
 			return

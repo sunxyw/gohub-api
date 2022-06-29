@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"errors"
 	v1 "gohub/app/http/controllers/api/v1"
 	"gohub/app/requests"
 	"gohub/pkg/auth"
@@ -31,8 +32,7 @@ func (lc *LoginController) LoginByPhone(c *gin.Context) {
 		response.Error(c, err, "账号不存在或密码错误")
 	} else {
 		// 登录成功
-		token := jwt.NewJWT().IssueToken(user.GetStringID(), user.Name)
-
+		token := jwt.IssueToken(user.GetStringID())
 		response.JSON(c, gin.H{
 			"token": token,
 		})
@@ -54,7 +54,7 @@ func (lc *LoginController) LoginByPassword(c *gin.Context) {
 		response.Unauthorized(c, "登录失败")
 
 	} else {
-		token := jwt.NewJWT().IssueToken(user.GetStringID(), user.Name)
+		token := jwt.IssueToken(user.GetStringID())
 		response.JSON(c, gin.H{
 			"token": token,
 		})
@@ -64,7 +64,10 @@ func (lc *LoginController) LoginByPassword(c *gin.Context) {
 // RefreshToken 刷新 Access Token
 func (lc *LoginController) RefreshToken(c *gin.Context) {
 
-	token, err := jwt.NewJWT().RefreshToken(c)
+	// TODO: implement refresh token
+	// token, err := jwt.NewJWT().RefreshToken(c)
+	token := "hello"
+	err := errors.New("hello")
 
 	if err != nil {
 		response.Error(c, err, "令牌刷新失败")
@@ -76,6 +79,7 @@ func (lc *LoginController) RefreshToken(c *gin.Context) {
 }
 
 func (lc *LoginController) Logout(c *gin.Context) {
-	jwt.NewJWT().RevokeToken(c)
+	// TODO: implement revoke token
+	// jwt.NewJWT().RevokeToken(c)
 	response.Success(c)
 }
