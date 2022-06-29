@@ -1,37 +1,34 @@
-# Go (Golang) Codespaces starter template
+<p align="center">
+<img src="https://cdn.sunxyw.xyz/images/engineer-gopher.png?x-oss-process=image/resize,w_400" width="400px">
+<br>
+一个帮助你快速实现 API 的 Golang 入门项目
+</p>
+![MIT License](https://img.shields.io/github/license/sunxyw/golang-api-starter?style=flat-square)
 
-Welcome, Gopher! This repository is a template for you to use in your next (or existing) Go project so you can take advantage of [Visual Studio Codespaces](https://visualstudio.microsoft.com/services/visual-studio-codespaces/), or the brand-new [GitHub Codespaces](https://github.com/features/codespaces).
+# 这是什么
 
-## How to get started on a new repository
+这是一个可以帮助你快速进行 API 开发，包含诸多通用功能的入门项目。
 
-The easiest way to get started is on a new repository. For that, simply click on the green "Use this template" button, right above the list of files.
+## 功能
 
-After you do, a list of options for creating a _new_ repository will pop up. After you're done, a brand new repository will be created for you, wherever you told it to. And it'll be pre-populated with everything you need to be up and running with Codespaces.
+- 多驱动用户认证（登录、注册），支持 Local、Firebase
+- 支持弱密码检测，数据库记录多达一百万
+- 基于 Casbin 的用户授权
+- 用户级别的多语言支持
+- 设备认证
+- 防钓鱼代码
+- 审查日志
+- Etag 支持
+- 自带跨域请求支持
 
-## How to get started with an existing repository
+## 致谢
 
-TODO
+- [LearnKu 社区](https://learnku.com/)
 
-## Testing this out
+## 贡献者
 
-This template sets up Go entirely inside a Docker image. To test it, make sure you have [Docker](https://docker.com) installed and run the below command from the root of this repository:
+- [@sunxyw](https://www.github.com/sunxyw)
 
-```console
-$ cd .devcontainer
-$ docker build .
-$ cd ..
-```
+## 开源协议
 
->When you run the command, make sure to remove the leading `$`
-
-## Built on the Shoulders of Giants
-
-Like almost every developer who contributes to open source, I didn't write this code in a vacuum. I had help! Thank you to the following contributors for helping me build this:
-
-- [`bnb`](https://github.com/bnb) for code from [codespaces-examples/node](https://github.com/codespaces-examples/node
-)
-- [`asw101`](https://github.com/asw101) for code from [`asw101/hello-vso`](https://github.com/asw101/hello-vso)
-
-I took inspiration, and sometimes code, from their repositories.
-
->I took code and ideas _directly_ from these developers' repositories. There are countless other projects and technologies that this repository implicitly relies on, and the list of contributors behind those projects is too long to write here. Thank you to every one of those contributors.
+[MIT](https://choosealicense.com/licenses/mit/)
