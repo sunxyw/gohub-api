@@ -47,6 +47,9 @@ func main() {
 
 			// 初始化 Firebase
 			firebase.InitFirebase()
+
+			// 初始化 JWT
+			bootstrap.SetupJWT()
 		},
 	}
 
