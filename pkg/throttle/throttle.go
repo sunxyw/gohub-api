@@ -9,6 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	limiterlib "github.com/ulule/limiter/v3"
+	smemory "github.com/ulule/limiter/v3/drivers/store/memory"
 	sredis "github.com/ulule/limiter/v3/drivers/store/redis"
 )
 
@@ -33,8 +34,8 @@ func CheckRate(c *gin.Context, key string, formatted string) (limiterlib.Context
 		return context, err
 	}
 
-	// 初始化存储，使用我们程序里共用的 redis.Redis 对象
-	store, err := sredis.NewStoreWithOptions(redis.Redis.Client, limiterlib.StoreOptions{
+	// 初始化存储
+	store, err := getStore(limiterlib.StoreOptions{
 		// 为 limiter 设置前缀，保持 redis 里数据的整洁
 		Prefix: config.GetString("app.name") + ":limiter",
 	})
@@ -65,4 +66,12 @@ func routeToKeyString(routeName string) string {
 	routeName = strings.ReplaceAll(routeName, "/", "-")
 	routeName = strings.ReplaceAll(routeName, ":", "_")
 	return routeName
+}
+
+func getStore(options limiterlib.StoreOptions) (limiterlib.Store, error) {
+	if config.GetBool("redis.enabled") {
+		return sredis.NewStoreWithOptions(redis.Redis.Client, options)
+	}
+
+	return smemory.NewStoreWithOptions(options), nil
 }
