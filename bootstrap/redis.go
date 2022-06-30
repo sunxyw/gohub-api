@@ -9,15 +9,15 @@ import (
 // SetupRedis 初始化 Redis
 func SetupRedis() {
 
-	if !config.GetBool("redis.enable") {
+	if !config.Get[bool]("redis.enable") {
 		return
 	}
 
 	// 建立 Redis 连接
 	redis.ConnectRedis(
-		fmt.Sprintf("%v:%v", config.GetString("redis.host"), config.GetString("redis.port")),
-		config.GetString("redis.username"),
-		config.GetString("redis.password"),
-		config.GetInt("redis.database"),
+		fmt.Sprintf("%v:%v", config.Get[string]("redis.host"), config.Get[string]("redis.port")),
+		config.Get[string]("redis.username"),
+		config.Get[string]("redis.password"),
+		config.Get[int]("redis.database"),
 	)
 }

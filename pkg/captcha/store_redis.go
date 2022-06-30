@@ -17,10 +17,10 @@ type RedisStore struct {
 // Set 实现 base64Captcha.Store interface 的 Set 方法
 func (s *RedisStore) Set(key string, value string) error {
 
-	ExpireTime := time.Minute * time.Duration(config.GetInt64("captcha.expire_time"))
+	ExpireTime := time.Minute * time.Duration(config.Get[int64]("captcha.expire_time"))
 	// 方便本地开发调试
 	if app.IsLocal() {
-		ExpireTime = time.Minute * time.Duration(config.GetInt64("captcha.debug_expire_time"))
+		ExpireTime = time.Minute * time.Duration(config.Get[int64]("captcha.debug_expire_time"))
 	}
 
 	if ok := s.RedisClient.Set(s.KeyPrefix+key, value, ExpireTime); !ok {

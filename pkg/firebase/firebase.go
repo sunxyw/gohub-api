@@ -17,7 +17,7 @@ var app *firebase.App
 
 func InitFirebase() {
 	once.Do(func() {
-		serviceAccountKeyPath := config.GetString("firebase.key_path")
+		serviceAccountKeyPath := config.Get[string]("firebase.key_path")
 		serviceAccountKeyFilePath, err := filepath.Abs(serviceAccountKeyPath)
 		logger.LogIf(err)
 

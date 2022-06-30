@@ -14,10 +14,10 @@ func getExpireTime() *jwtpkg.NumericDate {
 	timenow := app.TimenowInTimezone()
 
 	var expireTime int64
-	if config.GetBool("app.debug") {
-		expireTime = config.GetInt64("jwt.debug_expire_time")
+	if config.Get[bool]("app.debug") {
+		expireTime = config.Get[int64]("jwt.debug_expire_time")
 	} else {
-		expireTime = config.GetInt64("jwt.expire_time")
+		expireTime = config.Get[int64]("jwt.expire_time")
 	}
 
 	expire := time.Duration(expireTime) * time.Minute

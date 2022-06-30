@@ -95,8 +95,8 @@ func (p *Paginator) initProperties(perPage int, baseURL string) {
 	p.PerPage = p.getPerPage(perPage)
 
 	// 排序参数（控制器中以验证过这些参数，可放心使用）
-	p.Order = p.ctx.DefaultQuery(config.Get("paging.url_query_order"), "asc")
-	p.Sort = p.ctx.DefaultQuery(config.Get("paging.url_query_sort"), "id")
+	p.Order = p.ctx.DefaultQuery(config.Get[string]("paging.url_query_order"), "asc")
+	p.Sort = p.ctx.DefaultQuery(config.Get[string]("paging.url_query_sort"), "id")
 
 	p.TotalCount = p.getTotalCount()
 	p.TotalPage = p.getTotalPage()
@@ -106,14 +106,14 @@ func (p *Paginator) initProperties(perPage int, baseURL string) {
 
 func (p Paginator) getPerPage(perPage int) int {
 	// 优先使用请求 per_page 参数
-	queryPerpage := p.ctx.Query(config.Get("paging.url_query_per_page"))
+	queryPerpage := p.ctx.Query(config.Get[string]("paging.url_query_per_page"))
 	if len(queryPerpage) > 0 {
 		perPage = cast.ToInt(queryPerpage)
 	}
 
 	// 没有传参，使用默认
 	if perPage <= 0 {
-		perPage = config.GetInt("paging.perpage")
+		perPage = config.Get[int]("paging.perpage")
 	}
 
 	return perPage
@@ -122,7 +122,7 @@ func (p Paginator) getPerPage(perPage int) int {
 // getCurrentPage 返回当前页码
 func (p Paginator) getCurrentPage() int {
 	// 优先取用户请求的 page
-	page := cast.ToInt(p.ctx.Query(config.Get("paging.url_query_page")))
+	page := cast.ToInt(p.ctx.Query(config.Get[string]("paging.url_query_page")))
 	if page <= 0 {
 		// 默认为 1
 		page = 1
@@ -162,9 +162,9 @@ func (p Paginator) getTotalPage() int {
 // 兼容 URL 带与不带 `?` 的情况
 func (p *Paginator) formatBaseURL(baseURL string) string {
 	if strings.Contains(baseURL, "?") {
-		baseURL = baseURL + "&" + config.Get("paging.url_query_page") + "="
+		baseURL = baseURL + "&" + config.Get[string]("paging.url_query_page") + "="
 	} else {
-		baseURL = baseURL + "?" + config.Get("paging.url_query_page") + "="
+		baseURL = baseURL + "?" + config.Get[string]("paging.url_query_page") + "="
 	}
 	return baseURL
 }
@@ -174,11 +174,11 @@ func (p Paginator) getPageLink(page int) string {
 	return fmt.Sprintf("%v%v&%s=%s&%s=%s&%s=%v",
 		p.BaseURL,
 		page,
-		config.Get("paging.url_query_sort"),
+		config.Get[string]("paging.url_query_sort"),
 		p.Sort,
-		config.Get("paging.url_query_order"),
+		config.Get[string]("paging.url_query_order"),
 		p.Order,
-		config.Get("paging.url_query_per_page"),
+		config.Get[string]("paging.url_query_per_page"),
 		p.PerPage,
 	)
 }

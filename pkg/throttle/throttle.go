@@ -37,7 +37,7 @@ func CheckRate(c *gin.Context, key string, formatted string) (limiterlib.Context
 	// 初始化存储
 	store, err := getStore(limiterlib.StoreOptions{
 		// 为 limiter 设置前缀，保持 redis 里数据的整洁
-		Prefix: config.GetString("app.name") + ":limiter",
+		Prefix: config.Get[string]("app.name") + ":limiter",
 	})
 	if err != nil {
 		logger.LogIf(err)
@@ -69,7 +69,7 @@ func routeToKeyString(routeName string) string {
 }
 
 func getStore(options limiterlib.StoreOptions) (limiterlib.Store, error) {
-	if config.GetBool("redis.enabled") {
+	if config.Get[bool]("redis.enabled") {
 		return sredis.NewStoreWithOptions(redis.Redis.Client, options)
 	}
 

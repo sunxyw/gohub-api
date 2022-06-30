@@ -28,7 +28,7 @@ func NewVerifyCode() *VerifyCode {
 			Store: &RedisStore{
 				RedisClient: redis.Redis,
 				// 增加前缀保持数据库整洁，出问题调试时也方便
-				KeyPrefix: config.GetString("app.name") + ":verifycode:",
+				KeyPrefix: config.Get[string]("app.name") + ":verifycode:",
 			},
 		}
 	})
@@ -44,13 +44,13 @@ func (vc *VerifyCode) SendSMS(phone string) bool {
 	code := vc.generateVerifyCode(phone)
 
 	// 方便本地和 API 自动测试
-	if !app.IsProduction() && strings.HasPrefix(phone, config.GetString("verifycode.debug_phone_prefix")) {
+	if !app.IsProduction() && strings.HasPrefix(phone, config.Get[string]("verifycode.debug_phone_prefix")) {
 		return true
 	}
 
 	// 发送短信
 	return sms.NewSMS().Send(phone, sms.Message{
-		Template: config.GetString("sms.aliyun.template_code"),
+		Template: config.Get[string]("sms.aliyun.template_code"),
 		Data:     map[string]string{"code": code},
 	})
 }
@@ -63,7 +63,7 @@ func (vc *VerifyCode) SendEmail(email string) error {
 	code := vc.generateVerifyCode(email)
 
 	// 方便本地和 API 自动测试
-	if !app.IsProduction() && strings.HasSuffix(email, config.GetString("verifycode.debug_email_suffix")) {
+	if !app.IsProduction() && strings.HasSuffix(email, config.Get[string]("verifycode.debug_email_suffix")) {
 		return nil
 	}
 
@@ -71,8 +71,8 @@ func (vc *VerifyCode) SendEmail(email string) error {
 	// 发送邮件
 	mail.NewMailer().Send(mail.Email{
 		From: mail.From{
-			Address: config.GetString("mail.from.address"),
-			Name:    config.GetString("mail.from.name"),
+			Address: config.Get[string]("mail.from.address"),
+			Name:    config.Get[string]("mail.from.name"),
 		},
 		To:      []string{email},
 		Subject: "Email 验证码",
@@ -89,8 +89,8 @@ func (vc *VerifyCode) CheckAnswer(key string, answer string) bool {
 
 	// 方便开发，在非生产环境下，具备特殊前缀的手机号和 Email后缀，会直接验证成功
 	if !app.IsProduction() &&
-		(strings.HasSuffix(key, config.GetString("verifycode.debug_email_suffix")) ||
-			strings.HasPrefix(key, config.GetString("verifycode.debug_phone_prefix"))) {
+		(strings.HasSuffix(key, config.Get[string]("verifycode.debug_email_suffix")) ||
+			strings.HasPrefix(key, config.Get[string]("verifycode.debug_phone_prefix"))) {
 		return true
 	}
 
@@ -101,11 +101,11 @@ func (vc *VerifyCode) CheckAnswer(key string, answer string) bool {
 func (vc *VerifyCode) generateVerifyCode(key string) string {
 
 	// 生成随机码
-	code := helpers.RandomNumber(config.GetInt("verifycode.code_length"))
+	code := helpers.RandomNumber(config.Get[int]("verifycode.code_length"))
 
 	// 为方便开发，本地环境使用固定验证码
 	if app.IsLocal() {
-		code = config.GetString("verifycode.debug_code")
+		code = config.Get[string]("verifycode.debug_code")
 	}
 
 	logger.DebugJSON("验证码", "生成验证码", map[string]string{key: code})

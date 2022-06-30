@@ -20,7 +20,7 @@ type claims struct {
 
 func NewLocalProvider() *LocalProvider {
 	return &LocalProvider{
-		SignKey: []byte(config.GetString("app.key")),
+		SignKey: []byte(config.Get[string]("app.key")),
 	}
 }
 
@@ -30,7 +30,7 @@ func (lt *LocalProvider) IssueToken(uid string) string {
 		uid,
 		jwtpkg.RegisteredClaims{
 			ExpiresAt: getExpireTime(),
-			Issuer:    config.GetString("app.name"),
+			Issuer:    config.Get[string]("app.name"),
 		},
 	}
 

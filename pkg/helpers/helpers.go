@@ -74,3 +74,10 @@ func RandomString(length int) string {
 	}
 	return string(b)
 }
+
+func Elapsed(thing string) func() {
+	start := time.Now()
+	return func() {
+		fmt.Printf("%s elapsed: %s\n", thing, time.Since(start))
+	}
+}

@@ -19,7 +19,7 @@ func AuthJWT() gin.HandlerFunc {
 
 		// JWT 解析失败，有错误发生
 		if err != nil {
-			response.Unauthorized(c, fmt.Sprintf("请查看 %v 相关的接口认证文档", config.GetString("app.name")))
+			response.Unauthorized(c, fmt.Sprintf("请查看 %v 相关的接口认证文档", config.Get[string]("app.name")))
 			return
 		}
 

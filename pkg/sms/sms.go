@@ -37,5 +37,5 @@ func NewSMS() *SMS {
 }
 
 func (sms *SMS) Send(phone string, message Message) bool {
-	return sms.Driver.Send(phone, message, config.GetStringMapString("sms.aliyun"))
+	return sms.Driver.Send(phone, message, config.Get[map[string]string]("sms.aliyun"))
 }

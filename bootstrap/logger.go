@@ -9,12 +9,12 @@ import (
 func SetupLogger() {
 
 	logger.InitLogger(
-		config.GetString("log.filename"),
-		config.GetInt("log.max_size"),
-		config.GetInt("log.max_backup"),
-		config.GetInt("log.max_age"),
-		config.GetBool("log.compress"),
-		config.GetString("log.type"),
-		config.GetString("log.level"),
+		config.Get[string]("log.filename"),
+		config.Get[int]("log.max_size"),
+		config.Get[int]("log.max_backup"),
+		config.Get[int]("log.max_age"),
+		config.Get[bool]("log.compress"),
+		config.Get[string]("log.type"),
+		config.Get[string]("log.level"),
 	)
 }

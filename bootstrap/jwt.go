@@ -8,7 +8,7 @@ import (
 
 // SetupJWT 初始化 JWT
 func SetupJWT() {
-	selectedProvider := config.GetString("jwt.token_provider")
+	selectedProvider := config.Get[string]("jwt.token_provider")
 
 	switch selectedProvider {
 	case "local":

@@ -1,7 +1,8 @@
 package cmd
 
 import (
-	"gohub/pkg/jwt"
+	"gohub/pkg/config"
+	"gohub/pkg/helpers"
 	"gohub/pkg/logger"
 
 	"github.com/spf13/cobra"
@@ -15,11 +16,6 @@ var CmdPlay = &cobra.Command{
 
 // 调试完成后请记得清除测试代码
 func runPlay(cmd *cobra.Command, args []string) {
-	jwt.InitWithProvider(jwt.NewFirebaseProvider())
-	token := jwt.IssueToken("test")
-	uid, err := jwt.ParseToken(token)
-	if err != nil {
-		logger.LogIf(err)
-	}
-	logger.Dump(uid)
+	defer helpers.Elapsed("normal call")()
+	logger.Dump(config.Get[string]("app.name"))
 }

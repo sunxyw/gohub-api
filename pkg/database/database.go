@@ -42,7 +42,7 @@ func CurrentDatabase() (dbname string) {
 
 func DeleteAllTables() error {
 	var err error
-	switch config.Get("database.connection") {
+	switch config.Get[string]("database.connection") {
 	case "mysql":
 		err = deleteMySQLTables()
 	case "sqlite":

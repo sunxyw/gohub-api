@@ -33,7 +33,7 @@ func runWeb(cmd *cobra.Command, args []string) {
 	bootstrap.SetupRoute(router)
 
 	// 运行服务器
-	err := router.Run(":" + config.Get("app.port"))
+	err := router.Run(":" + config.Get[string]("app.port"))
 	if err != nil {
 		logger.ErrorString("CMD", "serve", err.Error())
 		console.Exit("Unable to start server, error:" + err.Error())
