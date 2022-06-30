@@ -44,8 +44,6 @@ func (ctrl *UsersController) UpdateProfile(c *gin.Context) {
 
 	currentUser := auth.CurrentUser(c)
 	currentUser.Name = request.Name
-	currentUser.City = request.City
-	currentUser.Introduction = request.Introduction
 	rowsAffected := currentUser.Save()
 	if rowsAffected > 0 {
 		response.Data(c, currentUser)
@@ -62,7 +60,7 @@ func (ctrl *UsersController) UpdateEmail(c *gin.Context) {
 	}
 
 	currentUser := auth.CurrentUser(c)
-	currentUser.Email = request.Email
+	// currentUser.Email = request.Email
 	rowsAffected := currentUser.Save()
 
 	if rowsAffected > 0 {
@@ -81,7 +79,7 @@ func (ctrl *UsersController) UpdatePhone(c *gin.Context) {
 	}
 
 	currentUser := auth.CurrentUser(c)
-	currentUser.Phone = request.Phone
+	// currentUser.Phone = request.Phone
 	rowsAffected := currentUser.Save()
 
 	if rowsAffected > 0 {
@@ -106,7 +104,7 @@ func (ctrl *UsersController) UpdatePassword(c *gin.Context) {
 		response.Unauthorized(c, "原密码不正确")
 	} else {
 		// 更新密码为新密码
-		currentUser.Password = request.NewPassword
+		// currentUser.Password = request.NewPassword
 		currentUser.Save()
 
 		response.Success(c)

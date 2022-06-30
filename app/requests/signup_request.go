@@ -152,3 +152,22 @@ func SignupUsingEmail(data interface{}, c *gin.Context) map[string][]string {
 
 	return errs
 }
+
+type SignupIdentifierExistRequest struct {
+	Identifier string `json:"identifier" valid:"identifier"`
+}
+
+func SignupIdentifierExist(data interface{}, c *gin.Context) map[string][]string {
+
+	rules := govalidator.MapData{
+		"identifier": []string{"required"},
+	}
+
+	messages := govalidator.MapData{
+		"identifier": []string{
+			"required:请提供验证信息",
+		},
+	}
+
+	return validate(data, rules, messages)
+}

@@ -58,7 +58,7 @@ func UserUpdateEmail(data interface{}, c *gin.Context) map[string][]string {
 			"max:30",
 			"email",
 			"not_exists:users,email," + currentUser.GetStringID(),
-			"not_in:" + currentUser.Email,
+			// "not_in:" + currentUser.Email,
 		},
 		"verify_code": []string{"required", "digits:6"},
 	}
@@ -98,7 +98,7 @@ func UserUpdatePhone(data interface{}, c *gin.Context) map[string][]string {
 			"required",
 			"digits:11",
 			"not_exists:users,phone," + currentUser.GetStringID(),
-			"not_in:" + currentUser.Phone,
+			// "not_in:" + currentUser.Phone,
 		},
 		"verify_code": []string{"required", "digits:6"},
 	}

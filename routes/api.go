@@ -34,22 +34,15 @@ func RegisterAPIRoutes(r *gin.Engine) {
 		{
 			// 登录
 			lgc := new(auth.LoginController)
-			authGroup.POST("/login/using-phone", middlewares.GuestJWT(), lgc.LoginByPhone)
-			authGroup.POST("/login/using-password", middlewares.GuestJWT(), lgc.LoginByPassword)
 			authGroup.POST("/login/refresh-token", middlewares.AuthJWT(), lgc.RefreshToken)
 			authGroup.POST("/logout", middlewares.AuthJWT(), lgc.Logout)
 
 			// 重置密码
-			pwc := new(auth.PasswordController)
-			authGroup.POST("/password-reset/using-email", middlewares.GuestJWT(), pwc.ResetByEmail)
-			authGroup.POST("/password-reset/using-phone", middlewares.GuestJWT(), pwc.ResetByPhone)
+			// pwc := new(auth.PasswordController)
 
 			// 注册用户
 			suc := new(auth.SignupController)
-			authGroup.POST("/signup/using-phone", middlewares.GuestJWT(), suc.SignupUsingPhone)
-			authGroup.POST("/signup/using-email", middlewares.GuestJWT(), suc.SignupUsingEmail)
-			authGroup.POST("/signup/phone/exist", middlewares.GuestJWT(), middlewares.ThrottleByRoute("60-H"), suc.IsPhoneExist)
-			authGroup.POST("/signup/email/exist", middlewares.GuestJWT(), middlewares.ThrottleByRoute("60-H"), suc.IsEmailExist)
+			authGroup.POST("/signup/identifier/exist", middlewares.GuestJWT(), middlewares.ThrottleByRoute("60-H"), suc.IsIdentifierExist)
 
 			// 发送验证码
 			vcc := new(auth.VerifyCodeController)
