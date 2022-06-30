@@ -43,6 +43,7 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			// 注册用户
 			suc := new(auth.SignupController)
 			authGroup.POST("/signup/identifier/exist", middlewares.GuestJWT(), middlewares.ThrottleByRoute("60-H"), suc.IsIdentifierExist)
+			authGroup.POST("/signup", middlewares.GuestJWT(), suc.Signup)
 
 			// 发送验证码
 			vcc := new(auth.VerifyCodeController)

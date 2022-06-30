@@ -13,7 +13,7 @@ func init() {
 				"enable": config.Env("AUTH_REGISTER_ENABLE", true),
 
 				// 注册是否需要验证码
-				"captcha": config.Env("AUTH_REGISTER_CAPTCHA", true),
+				"captcha": config.Env("AUTH_REGISTER_CAPTCHA", false),
 			},
 
 			// 登录相关配置

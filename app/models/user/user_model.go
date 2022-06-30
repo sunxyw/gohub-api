@@ -29,3 +29,8 @@ func (userModel *User) Save() (rowsAffected int64) {
 	result := database.DB.Save(&userModel)
 	return result.RowsAffected
 }
+
+func (user *User) Delete() (rowsAffected int64) {
+	result := database.DB.Delete(&user)
+	return result.RowsAffected
+}

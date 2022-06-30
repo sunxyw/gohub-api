@@ -81,3 +81,10 @@ func Elapsed(thing string) func() {
 		fmt.Printf("%s elapsed: %s\n", thing, time.Since(start))
 	}
 }
+
+func IfThen[T any](condition bool, a, b T) T {
+	if condition {
+		return a
+	}
+	return b
+}
