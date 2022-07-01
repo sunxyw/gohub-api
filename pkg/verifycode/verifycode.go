@@ -8,7 +8,6 @@ import (
 	"gohub/pkg/helpers"
 	"gohub/pkg/logger"
 	"gohub/pkg/mail"
-	"gohub/pkg/redis"
 	"gohub/pkg/sms"
 	"strings"
 	"sync"
@@ -25,8 +24,7 @@ var internalVerifyCode *VerifyCode
 func NewVerifyCode() *VerifyCode {
 	once.Do(func() {
 		internalVerifyCode = &VerifyCode{
-			Store: &RedisStore{
-				RedisClient: redis.Redis,
+			Store: &CacheStore{
 				// 增加前缀保持数据库整洁，出问题调试时也方便
 				KeyPrefix: config.Get[string]("app.name") + ":verifycode:",
 			},

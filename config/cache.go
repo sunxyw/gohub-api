@@ -8,7 +8,7 @@ func init() {
 		return map[string]interface{}{
 
 			// 缓存驱动，支持：memory、redis
-			"driver": "memory",
+			"driver": config.Env("CACHE_DRIVER", "memory"),
 		}
 	})
 }
