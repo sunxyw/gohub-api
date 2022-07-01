@@ -5,7 +5,6 @@ import (
 	"gohub/app/requests/validators"
 	"gohub/pkg/config"
 	"gohub/pkg/helpers"
-	"gohub/pkg/logger"
 
 	"github.com/gin-gonic/gin"
 	"github.com/thedevsaddam/govalidator"
@@ -193,8 +192,6 @@ func Signup(data interface{}, c *gin.Context) map[string][]string {
 		"password":    []string{"required", "password:strong,uncommon"},
 		"verify_code": helpers.IfThen(requireVerifiyCode, []string{"required", "digits:6"}, []string{}),
 	}
-
-	logger.Dump(rules)
 
 	messages := govalidator.MapData{
 		"type": []string{
