@@ -190,7 +190,7 @@ func Signup(data interface{}, c *gin.Context) map[string][]string {
 		"type":        []string{"required"},
 		"identifier":  []string{"required", "not_exists:user_auths,identifier"},
 		"name":        []string{"required", "alpha_num", "between:3,20", "not_exists:users,name"},
-		"password":    []string{"required", "min:6"},
+		"password":    []string{"required", "password:strong,uncommon"},
 		"verify_code": helpers.IfThen(requireVerifiyCode, []string{"required", "digits:6"}, []string{}),
 	}
 
@@ -211,7 +211,6 @@ func Signup(data interface{}, c *gin.Context) map[string][]string {
 		},
 		"password": []string{
 			"required:密码为必填项",
-			"min:密码长度需大于 6",
 		},
 		"verify_code": []string{
 			"required:验证码答案必填",

@@ -9,7 +9,9 @@ import (
 	"strings"
 	"unicode/utf8"
 
+	"github.com/spf13/cast"
 	"github.com/thedevsaddam/govalidator"
+	passwordvalidator "github.com/wagslane/go-password-validator"
 )
 
 // 此方法会在初始化时执行，注册自定义表单验证规则
@@ -116,6 +118,30 @@ func init() {
 			}
 			return fmt.Errorf("%v 不存在", requestValue)
 		}
+		return nil
+	})
+
+	govalidator.AddCustomRule("password", func(field, rule, message string, value interface{}) error {
+		rule = strings.TrimPrefix(rule, "password:")
+		checks := strings.Split(rule, ",")
+		val := cast.ToString(value)
+
+		if len(checks) == 0 {
+			return errors.New("password: 参数错误")
+		}
+
+		for _, check := range checks {
+			switch check {
+			case "strong":
+				err := passwordvalidator.Validate(val, 60)
+				if err != nil {
+					return err
+				}
+			case "uncommon":
+				// TODO: 实现
+			}
+		}
+
 		return nil
 	})
 }

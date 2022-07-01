@@ -5,7 +5,6 @@ import (
 	"gohub/app/models"
 	"gohub/pkg/database"
 	"gohub/pkg/hash"
-	"os/user"
 )
 
 type UserAuth struct {
@@ -16,8 +15,6 @@ type UserAuth struct {
 	Identifier string `json:"identifier,omitempty"`
 	Credential string `json:"-"`
 	Verified   bool   `json:"verified,omitempty"`
-
-	User user.User `json:"user"`
 
 	models.CommonTimestampsField
 }

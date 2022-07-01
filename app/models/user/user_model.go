@@ -15,7 +15,7 @@ type User struct {
 	Avatar string `json:"avatar,omitempty"`
 	Rank   int    `json:"rank,omitempty"`
 
-	Auths []user_auth.UserAuth `json:"auths"`
+	Auths []user_auth.UserAuth `json:"auths" gorm:"foreignKey:UserID"`
 
 	models.CommonTimestampsField
 }

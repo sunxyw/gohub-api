@@ -36,30 +36,21 @@ func (sc *SignupController) Signup(c *gin.Context) {
 	// 创建用户
 	userModel := user.User{
 		Name: request.Name,
-	}
-	userAuthModel := user_auth.UserAuth{
-		Type:       request.Type,
-		Identifier: request.Identifier,
-		Credential: request.Password,
+		Auths: []user_auth.UserAuth{
+			{
+				Type:       request.Type,
+				Identifier: request.Identifier,
+				Credential: request.Password,
+			},
+		},
 	}
 	userModel.Create()
 	if userModel.ID > 0 {
-		// 用户创建完成，创建认证记录
-		userAuthModel.UserID = userModel.ID
-		userAuthModel.Create()
 
-		if userAuthModel.ID > 0 {
-			// 注册成功
-			response.Created(c, gin.H{
-				"user":      userModel,
-				"user_auth": userAuthModel,
-			})
-			return
-		}
-
-		// 认证记录创建失败，删除用户
-		userModel.Delete()
-		response.Abort500(c, "创建认证记录失败，请稍后再试~")
+		// 注册成功
+		response.Created(c, gin.H{
+			"user": userModel,
+		})
 		return
 	}
 

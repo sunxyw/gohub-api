@@ -33,10 +33,13 @@ func Set(key string, obj interface{}, expireTime time.Duration) {
 
 func Get(key string) interface{} {
 	stringValue := Cache.Store.Get(key)
-	var wanted interface{}
-	err := json.Unmarshal([]byte(stringValue), &wanted)
-	logger.LogIf(err)
-	return wanted
+	if len(stringValue) > 0 {
+		var wanted interface{}
+		err := json.Unmarshal([]byte(stringValue), &wanted)
+		logger.LogIf(err)
+		return wanted
+	}
+	return nil
 }
 
 func Has(key string) bool {
