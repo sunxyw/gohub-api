@@ -15,6 +15,7 @@ require (
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d
 	github.com/mojocn/base64Captcha v1.3.5
+	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/spf13/cast v1.5.0
 	github.com/spf13/cobra v1.5.0
 	github.com/spf13/viper v1.12.0
@@ -26,7 +27,7 @@ require (
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gorm.io/driver/mysql v1.3.4
 	gorm.io/driver/sqlite v1.3.5
-	gorm.io/gorm v1.23.6
+	gorm.io/gorm v1.23.7
 )
 
 require (
@@ -65,7 +66,6 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/pborman/uuid v1.2.1 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.2 // indirect
