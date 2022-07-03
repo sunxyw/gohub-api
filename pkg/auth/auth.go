@@ -4,24 +4,25 @@ package auth
 import (
 	"errors"
 	"gohub/app/models/user"
+	"gohub/app/models/user_auth"
 	"gohub/pkg/logger"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/cast"
 )
 
 // Attempt 尝试登录
-func Attempt(email string, password string) (user.User, error) {
-	// userModel := user.GetByMulti(email)
-	userModel := user.Get("1")
-	if userModel.ID == 0 {
+func Attempt(identifier string, password string) (user.User, error) {
+	authRecord := user_auth.GetByIdentifier(identifier)
+	if authRecord.ID == 0 {
 		return user.User{}, errors.New("账号不存在")
 	}
 
-	// if !userModel.ComparePassword(password) {
-	// 	return user.User{}, errors.New("密码错误")
-	// }
+	if !authRecord.ComparePassword(password) {
+		return user.User{}, errors.New("密码错误")
+	}
 
-	return userModel, nil
+	return user.Get(cast.ToString(authRecord.UserID)), nil
 }
 
 // CurrentUser 从 gin.context 中获取当前登录用户
