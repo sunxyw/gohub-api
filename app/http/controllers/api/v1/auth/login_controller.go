@@ -3,6 +3,9 @@ package auth
 import (
 	"errors"
 	v1 "gohub/app/http/controllers/api/v1"
+	"gohub/app/requests"
+	"gohub/pkg/auth"
+	"gohub/pkg/jwt"
 	"gohub/pkg/response"
 
 	"github.com/gin-gonic/gin"
@@ -34,4 +37,21 @@ func (lc *LoginController) Logout(c *gin.Context) {
 	// TODO: implement revoke token
 	// jwt.NewJWT().RevokeToken(c)
 	response.Success(c)
+}
+
+func (lc *LoginController) LoginByPassword(c *gin.Context) {
+	request := requests.LoginByPasswordRequest{}
+	if ok := requests.Validate(c, &request, requests.LoginByPassword); !ok {
+		return
+	}
+
+	user, err := auth.Attempt(request.Identifier, request.Password)
+	if err != nil {
+		response.Unauthorized(c, "账号或密码错误")
+	} else {
+		token := jwt.IssueToken(user.GetStringID())
+		response.JSON(c, gin.H{
+			"token": token,
+		})
+	}
 }

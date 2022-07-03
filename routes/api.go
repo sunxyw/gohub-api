@@ -34,6 +34,7 @@ func RegisterAPIRoutes(r *gin.Engine) {
 		{
 			// 登录
 			lgc := new(auth.LoginController)
+			authGroup.POST("/login/password", middlewares.GuestJWT(), lgc.LoginByPassword)
 			authGroup.POST("/login/refresh-token", middlewares.AuthJWT(), lgc.RefreshToken)
 			authGroup.POST("/logout", middlewares.AuthJWT(), lgc.Logout)
 

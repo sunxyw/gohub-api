@@ -43,21 +43,21 @@ type LoginByPasswordRequest struct {
 	CaptchaID     string `json:"captcha_id,omitempty" valid:"captcha_id"`
 	CaptchaAnswer string `json:"captcha_answer,omitempty" valid:"captcha_answer"`
 
-	LoginID  string `valid:"login_id" json:"login_id"`
-	Password string `valid:"password" json:"password,omitempty"`
+	Identifier string `valid:"identifier" json:"identifier"`
+	Password   string `valid:"password" json:"password,omitempty"`
 }
 
 // LoginByPassword 验证表单，返回长度等于零即通过
 func LoginByPassword(data interface{}, c *gin.Context) map[string][]string {
 
 	rules := govalidator.MapData{
-		"login_id":       []string{"required", "min:3"},
-		"password":       []string{"required", "min:6"},
+		"identifier":     []string{"required"},
+		"password":       []string{"required"},
 		"captcha_id":     []string{"required"},
 		"captcha_answer": []string{"required", "digits:6"},
 	}
 	messages := govalidator.MapData{
-		"login_id": []string{
+		"identifier": []string{
 			"required:登录 ID 为必填项，支持手机号、邮箱和用户名",
 			"min:登录 ID 长度需大于 3",
 		},
