@@ -2,6 +2,7 @@
 package models
 
 import (
+	"gohub/pkg/database"
 	"time"
 
 	"github.com/spf13/cast"
@@ -21,4 +22,8 @@ type CommonTimestampsField struct {
 // GetStringID 获取 ID 的字符串格式
 func (a BaseModel) GetStringID() string {
 	return cast.ToString(a.ID)
+}
+
+func QueryFirst[T any](query database.Query, result T) {
+	database.DB.Where(query).First(&result)
 }

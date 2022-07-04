@@ -1,6 +1,7 @@
 package user_auth
 
 import (
+	"gohub/app/models"
 	"gohub/pkg/app"
 	"gohub/pkg/database"
 	"gohub/pkg/paginator"
@@ -42,7 +43,8 @@ func Paginate(c *gin.Context, perPage int) (userAuths []UserAuth, paging paginat
 
 // GetByIdentifier 通过 Identifier 来获取用户
 func GetByIdentifier(identifier string) (userAuth UserAuth) {
-	return GetBy("identifier", identifier)
+	models.QueryFirst(*database.NewQuery().Where("identifier", identifier), &userAuth)
+	return
 }
 
 // IsIdentifierExist 判断 Identifier 已被注册
