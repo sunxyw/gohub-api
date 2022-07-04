@@ -1,7 +1,11 @@
 // Package config 站点配置信息
 package config
 
-import "gohub/pkg/config"
+import (
+	"gohub/pkg/config"
+
+	"github.com/spf13/cast"
+)
 
 func init() {
 	config.Add("app", func() map[string]interface{} {
@@ -14,7 +18,7 @@ func init() {
 			"env": config.Env("APP_ENV", "production"),
 
 			// 是否进入调试模式
-			"debug": config.Env("APP_DEBUG", false),
+			"debug": cast.ToBool(config.Env("APP_DEBUG", false)),
 
 			// 应用服务端口
 			"port": config.Env("APP_PORT", "3000"),
