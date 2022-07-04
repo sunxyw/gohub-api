@@ -14,10 +14,10 @@ type CacheStore struct {
 }
 
 func (s *CacheStore) Set(key string, value string) error {
-	expireTime := time.Minute * time.Duration(config.Get[int64]("captcha.expire_time"))
+	expireTime := time.Minute * time.Duration(config.Get[int]("captcha.expire_time"))
 
 	if app.IsLocal() {
-		expireTime = time.Minute * time.Duration(config.Get[int64]("captcha.debug_expire_time"))
+		expireTime = time.Minute * time.Duration(config.Get[int]("captcha.debug_expire_time"))
 	}
 
 	cache.Set(s.KeyPrefix+key, value, expireTime)
