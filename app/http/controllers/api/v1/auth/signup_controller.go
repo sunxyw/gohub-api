@@ -5,6 +5,7 @@ import (
 	v1 "gohub/app/http/controllers/api/v1"
 	"gohub/app/models/user"
 	"gohub/app/models/user_auth"
+	"gohub/app/policies"
 	"gohub/app/requests"
 	"gohub/pkg/response"
 
@@ -27,9 +28,16 @@ func (sc *SignupController) IsIdentifierExist(c *gin.Context) {
 }
 
 func (sc *SignupController) Signup(c *gin.Context) {
+
 	// 验证表单
 	request := requests.SignupRequest{}
 	if ok := requests.Validate(c, &request, requests.Signup); !ok {
+		return
+	}
+
+	// 检查是否可以注册
+	if !policies.CanRegisterUsing(c, request.Type) {
+		response.Unavailable(c, "抱歉，暂不注册该类型的注册")
 		return
 	}
 

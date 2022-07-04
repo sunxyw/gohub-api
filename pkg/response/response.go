@@ -119,6 +119,13 @@ func Unauthorized(c *gin.Context, msg ...string) {
 	})
 }
 
+// Unavailable 响应 503，未传参 msg 时使用默认消息
+func Unavailable(c *gin.Context, msg ...string) {
+	c.AbortWithStatusJSON(http.StatusServiceUnavailable, gin.H{
+		"message": defaultMessage("服务器繁忙，请稍后再试", msg...),
+	})
+}
+
 // defaultMessage 内用的辅助函数，用以支持默认参数默认值
 // Go 不支持参数默认值，只能使用多变参数来实现类似效果
 func defaultMessage(defaultMsg string, msg ...string) (message string) {
