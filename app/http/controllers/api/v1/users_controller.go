@@ -18,7 +18,9 @@ type UsersController struct {
 // CurrentUser 当前登录用户信息
 func (ctrl *UsersController) CurrentUser(c *gin.Context) {
 	userModel := auth.CurrentUser(c)
-	response.Data(c, userModel)
+	response.SuccessWithData(c, gin.H{
+		"user": userModel,
+	})
 }
 
 // Index 所有用户
@@ -28,10 +30,10 @@ func (ctrl *UsersController) Index(c *gin.Context) {
 		return
 	}
 
-	data, pager := user.Paginate(c, 10)
-	response.JSON(c, gin.H{
-		"data":  data,
-		"pager": pager,
+	// TODO: implement pager
+	data, _ := user.Paginate(c, 10)
+	response.SuccessWithData(c, gin.H{
+		"users": data,
 	})
 }
 
@@ -46,9 +48,9 @@ func (ctrl *UsersController) UpdateProfile(c *gin.Context) {
 	currentUser.Name = request.Name
 	rowsAffected := currentUser.Save()
 	if rowsAffected > 0 {
-		response.Data(c, currentUser)
+		response.Success(c)
 	} else {
-		response.Abort500(c, "更新失败，请稍后尝试~")
+		response.ServerError(c, "更新失败，请稍后尝试~")
 	}
 }
 
@@ -67,7 +69,7 @@ func (ctrl *UsersController) UpdateEmail(c *gin.Context) {
 		response.Success(c)
 	} else {
 		// 失败，显示错误提示
-		response.Abort500(c, "更新失败，请稍后尝试~")
+		response.ServerError(c, "更新失败，请稍后尝试~")
 	}
 }
 
@@ -85,7 +87,7 @@ func (ctrl *UsersController) UpdatePhone(c *gin.Context) {
 	if rowsAffected > 0 {
 		response.Success(c)
 	} else {
-		response.Abort500(c, "更新失败，请稍后尝试~")
+		response.ServerError(c, "更新失败，请稍后尝试~")
 	}
 }
 
@@ -120,7 +122,7 @@ func (ctrl *UsersController) UpdateAvatar(c *gin.Context) {
 
 	avatar, err := file.SaveUploadAvatar(c, request.Avatar)
 	if err != nil {
-		response.Abort500(c, "上传头像失败，请稍后尝试~")
+		response.ServerError(c, "上传头像失败，请稍后尝试~")
 		return
 	}
 
@@ -128,5 +130,5 @@ func (ctrl *UsersController) UpdateAvatar(c *gin.Context) {
 	currentUser.Avatar = config.Get[string]("app.url") + avatar
 	currentUser.Save()
 
-	response.Data(c, currentUser)
+	response.Success(c)
 }

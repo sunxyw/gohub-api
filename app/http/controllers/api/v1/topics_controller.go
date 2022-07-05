@@ -29,9 +29,11 @@ func (ctrl *TopicsController) Store(c *gin.Context) {
 	}
 	topicModel.Create()
 	if topicModel.ID > 0 {
-		response.Created(c, topicModel)
+		response.Created(c, gin.H{
+			"topic": topicModel,
+		})
 	} else {
-		response.Abort500(c, "创建失败，请稍后尝试~")
+		response.ServerError(c, "创建失败，请稍后尝试~")
 	}
 }
 
@@ -39,12 +41,12 @@ func (ctrl *TopicsController) Update(c *gin.Context) {
 
 	topicModel := topic.Get(c.Param("id"))
 	if topicModel.ID == 0 {
-		response.Abort404(c)
+		response.NotFound(c)
 		return
 	}
 
 	if ok := policies.CanModifyTopic(c, topicModel); !ok {
-		response.Abort403(c)
+		response.Forbidden(c)
 		return
 	}
 
@@ -58,9 +60,11 @@ func (ctrl *TopicsController) Update(c *gin.Context) {
 	topicModel.CategoryID = request.CategoryID
 	rowsAffected := topicModel.Save()
 	if rowsAffected > 0 {
-		response.Data(c, topicModel)
+		response.SuccessWithData(c, gin.H{
+			"topic": topicModel,
+		})
 	} else {
-		response.Abort500(c, "更新失败，请稍后尝试~")
+		response.ServerError(c, "更新失败，请稍后尝试~")
 	}
 }
 
@@ -68,12 +72,12 @@ func (ctrl *TopicsController) Delete(c *gin.Context) {
 
 	topicModel := topic.Get(c.Param("id"))
 	if topicModel.ID == 0 {
-		response.Abort404(c)
+		response.NotFound(c)
 		return
 	}
 
 	if ok := policies.CanModifyTopic(c, topicModel); !ok {
-		response.Abort403(c)
+		response.Forbidden(c)
 		return
 	}
 
@@ -83,7 +87,7 @@ func (ctrl *TopicsController) Delete(c *gin.Context) {
 		return
 	}
 
-	response.Abort500(c, "删除失败，请稍后尝试~")
+	response.ServerError(c, "删除失败，请稍后尝试~")
 }
 
 func (ctrl *TopicsController) Index(c *gin.Context) {
@@ -92,18 +96,20 @@ func (ctrl *TopicsController) Index(c *gin.Context) {
 		return
 	}
 
-	data, pager := topic.Paginate(c, 10)
-	response.JSON(c, gin.H{
-		"data":  data,
-		"pager": pager,
+	// TODO: implement pager
+	data, _ := topic.Paginate(c, 10)
+	response.SuccessWithData(c, gin.H{
+		"topics": data,
 	})
 }
 
 func (ctrl *TopicsController) Show(c *gin.Context) {
 	topicModel := topic.Get(c.Param("id"))
 	if topicModel.ID == 0 {
-		response.Abort404(c)
+		response.NotFound(c)
 		return
 	}
-	response.Data(c, topicModel)
+	response.SuccessWithData(c, gin.H{
+		"topic": topicModel,
+	})
 }

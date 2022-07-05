@@ -56,14 +56,14 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			uc := new(controllers.UsersController)
 			// 获取当前用户
 			v1.GET("/user", middlewares.AuthJWT(), uc.CurrentUser)
-			usersGroup := v1.Group("/users")
+			usersGroup := v1.Group("/users", middlewares.AuthJWT())
 			{
 				usersGroup.GET("", uc.Index)
-				usersGroup.PUT("", middlewares.AuthJWT(), uc.UpdateProfile)
-				usersGroup.PATCH("/email", middlewares.AuthJWT(), uc.UpdateEmail)
-				usersGroup.PATCH("/phone", middlewares.AuthJWT(), uc.UpdatePhone)
-				usersGroup.PATCH("/password", middlewares.AuthJWT(), uc.UpdatePassword)
-				usersGroup.PATCH("/avatar", middlewares.AuthJWT(), uc.UpdateAvatar)
+				usersGroup.PUT("", uc.UpdateProfile)
+				usersGroup.PATCH("/email", uc.UpdateEmail)
+				usersGroup.PATCH("/phone", uc.UpdatePhone)
+				usersGroup.PATCH("/password", uc.UpdatePassword)
+				usersGroup.PATCH("/avatar", uc.UpdateAvatar)
 			}
 		}
 

@@ -22,7 +22,7 @@ func (sc *SignupController) IsIdentifierExist(c *gin.Context) {
 	if ok := requests.Validate(c, &request, requests.SignupIdentifierExist); !ok {
 		return
 	}
-	response.JSON(c, gin.H{
+	response.SuccessWithData(c, gin.H{
 		"exist": user_auth.IsIdentifierExist(request.Identifier),
 	})
 }
@@ -62,5 +62,5 @@ func (sc *SignupController) Signup(c *gin.Context) {
 		return
 	}
 
-	response.Abort500(c, "创建用户失败，请稍后再试~")
+	response.ServerError(c, "创建用户失败，请稍后再试~")
 }

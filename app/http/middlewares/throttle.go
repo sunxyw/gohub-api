@@ -59,7 +59,7 @@ func handleThrottle(c *gin.Context, key string, limit string) bool {
 	rate, err := throttle.CheckRate(c, key, limit)
 	if err != nil {
 		logger.LogIf(err)
-		response.Abort500(c)
+		response.ServerError(c)
 		return false
 	}
 

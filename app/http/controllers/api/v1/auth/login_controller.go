@@ -6,6 +6,7 @@ import (
 	"gohub/app/requests"
 	"gohub/pkg/auth"
 	"gohub/pkg/jwt"
+	"gohub/pkg/logger"
 	"gohub/pkg/response"
 
 	"github.com/gin-gonic/gin"
@@ -25,9 +26,10 @@ func (lc *LoginController) RefreshToken(c *gin.Context) {
 	err := errors.New("hello")
 
 	if err != nil {
-		response.Error(c, err, "令牌刷新失败")
+		logger.LogIf(err)
+		response.Fail(c, "令牌刷新失败")
 	} else {
-		response.JSON(c, gin.H{
+		response.SuccessWithData(c, gin.H{
 			"token": token,
 		})
 	}
@@ -51,7 +53,7 @@ func (lc *LoginController) LoginByPassword(c *gin.Context) {
 		response.Unauthorized(c, "账号或密码错误")
 	} else {
 		token := jwt.IssueToken(user.GetStringID())
-		response.JSON(c, gin.H{
+		response.SuccessWithData(c, gin.H{
 			"token": token,
 		})
 	}

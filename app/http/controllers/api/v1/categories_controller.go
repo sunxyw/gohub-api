@@ -25,9 +25,11 @@ func (ctrl *CategoriesController) Store(c *gin.Context) {
 	}
 	categoryModel.Create()
 	if categoryModel.ID > 0 {
-		response.Created(c, categoryModel)
+		response.Created(c, gin.H{
+			"category": categoryModel,
+		})
 	} else {
-		response.Abort500(c, "创建失败，请稍后尝试~")
+		response.ServerError(c, "创建失败，请稍后尝试~")
 	}
 }
 
@@ -36,7 +38,7 @@ func (ctrl *CategoriesController) Update(c *gin.Context) {
 	// 验证 url 参数 id 是否正确
 	categoryModel := category.Get(c.Param("id"))
 	if categoryModel.ID == 0 {
-		response.Abort404(c)
+		response.NotFound(c)
 		return
 	}
 
@@ -52,9 +54,11 @@ func (ctrl *CategoriesController) Update(c *gin.Context) {
 	rowsAffected := categoryModel.Save()
 
 	if rowsAffected > 0 {
-		response.Data(c, categoryModel)
+		response.SuccessWithData(c, gin.H{
+			"category": categoryModel,
+		})
 	} else {
-		response.Abort500(c)
+		response.ServerError(c)
 	}
 }
 
@@ -64,10 +68,10 @@ func (ctrl *CategoriesController) Index(c *gin.Context) {
 		return
 	}
 
-	data, pager := category.Paginate(c, 10)
-	response.JSON(c, gin.H{
-		"data":  data,
-		"pager": pager,
+	// TODO: implement pager
+	data, _ := category.Paginate(c, 10)
+	response.SuccessWithData(c, gin.H{
+		"categories": data,
 	})
 }
 
@@ -75,7 +79,7 @@ func (ctrl *CategoriesController) Delete(c *gin.Context) {
 
 	categoryModel := category.Get(c.Param("id"))
 	if categoryModel.ID == 0 {
-		response.Abort404(c)
+		response.NotFound(c)
 		return
 	}
 
@@ -85,5 +89,5 @@ func (ctrl *CategoriesController) Delete(c *gin.Context) {
 		return
 	}
 
-	response.Abort500(c, "删除失败，请稍后尝试~")
+	response.ServerError(c, "删除失败，请稍后尝试~")
 }
