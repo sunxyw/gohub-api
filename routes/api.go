@@ -2,8 +2,6 @@
 package routes
 
 import (
-	controllers "gohub/app/http/controllers/api/v1"
-	"gohub/app/http/controllers/api/v1/auth"
 	"gohub/app/http/middlewares"
 	"gohub/pkg/config"
 
@@ -32,64 +30,6 @@ func RegisterAPIRoutes(r *gin.Engine) {
 		// 测试时，可以调高一点
 		authGroup.Use(middlewares.ThrottleByIP("1000-H"))
 		{
-			// 登录
-			lgc := new(auth.LoginController)
-			authGroup.POST("/login/password", middlewares.GuestJWT(), lgc.LoginByPassword)
-			authGroup.POST("/login/refresh-token", middlewares.AuthJWT(), lgc.RefreshToken)
-			authGroup.POST("/logout", middlewares.AuthJWT(), lgc.Logout)
-
-			// 重置密码
-			// pwc := new(auth.PasswordController)
-
-			// 注册用户
-			suc := new(auth.SignupController)
-			authGroup.POST("/signup/identifier/exist", middlewares.GuestJWT(), middlewares.ThrottleByRoute("60-H"), suc.IsIdentifierExist)
-			authGroup.POST("/signup", middlewares.GuestJWT(), suc.Signup)
-
-			// 发送验证码
-			vcc := new(auth.VerifyCodeController)
-			authGroup.POST("/verify-codes/phone", middlewares.ThrottleByRoute("20-H"), vcc.SendUsingPhone)
-			authGroup.POST("/verify-codes/email", middlewares.ThrottleByRoute("20-H"), vcc.SendUsingEmail)
-			// 图片验证码
-			authGroup.POST("/verify-codes/captcha", middlewares.ThrottleByRoute("50-H"), vcc.ShowCaptcha)
-
-			uc := new(controllers.UsersController)
-			// 获取当前用户
-			v1.GET("/user", middlewares.AuthJWT(), uc.CurrentUser)
-			usersGroup := v1.Group("/users", middlewares.AuthJWT())
-			{
-				usersGroup.GET("", uc.Index)
-				usersGroup.PUT("", uc.UpdateProfile)
-				usersGroup.PATCH("/email", uc.UpdateEmail)
-				usersGroup.PATCH("/phone", uc.UpdatePhone)
-				usersGroup.PATCH("/password", uc.UpdatePassword)
-				usersGroup.PATCH("/avatar", uc.UpdateAvatar)
-			}
-		}
-
-		cgc := new(controllers.CategoriesController)
-		cgcGroup := v1.Group("/categories")
-		{
-			cgcGroup.GET("", cgc.Index)
-			cgcGroup.POST("", middlewares.AuthJWT(), cgc.Store)
-			cgcGroup.PUT("/:id", middlewares.AuthJWT(), cgc.Update)
-			cgcGroup.DELETE("/:id", middlewares.AuthJWT(), cgc.Delete)
-		}
-
-		tpc := new(controllers.TopicsController)
-		tpcGroup := v1.Group("/topics")
-		{
-			tpcGroup.GET("", tpc.Index)
-			tpcGroup.POST("", middlewares.AuthJWT(), tpc.Store)
-			tpcGroup.PUT("/:id", middlewares.AuthJWT(), tpc.Update)
-			tpcGroup.DELETE("/:id", middlewares.AuthJWT(), tpc.Delete)
-			tpcGroup.GET("/:id", tpc.Show)
-		}
-
-		lsc := new(controllers.LinksController)
-		linksGroup := v1.Group("/links")
-		{
-			linksGroup.GET("", lsc.Index)
 		}
 	}
 }

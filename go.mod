@@ -5,7 +5,6 @@ go 1.18
 require (
 	firebase.google.com/go/v4 v4.8.0
 	github.com/KenmyZhang/aliyun-communicate v0.0.0-20180308134849-7997edc57454
-	github.com/bxcodec/faker/v3 v3.8.0
 	github.com/disintegration/imaging v1.6.2
 	github.com/gertd/go-pluralize v0.2.1
 	github.com/gin-gonic/gin v1.8.1
