@@ -3,7 +3,6 @@ package middlewares
 
 import (
 	"fmt"
-	"gohub/app/models/user"
 	"gohub/pkg/config"
 	"gohub/pkg/jwt"
 	"gohub/pkg/response"
@@ -23,17 +22,18 @@ func AuthJWT() gin.HandlerFunc {
 			return
 		}
 
+		// TODO: set userModel
 		// JWT 解析成功，设置用户信息
-		userModel := user.Get(uid)
-		if userModel.ID == 0 {
-			response.Unauthorized(c, "找不到对应用户，用户可能已删除")
-			return
-		}
+		// userModel := user.Get(uid)
+		// if userModel.ID == 0 {
+		// 	response.Unauthorized(c, "找不到对应用户，用户可能已删除")
+		// 	return
+		// }
 
 		// 将用户信息存入 gin.context 里，后续 auth 包将从这里拿到当前用户数据
-		c.Set("current_user_id", userModel.GetStringID())
-		c.Set("current_user_name", userModel.Name)
-		c.Set("current_user", userModel)
+		c.Set("current_user_id", uid)
+		// c.Set("current_user_name", userModel.Name)
+		// c.Set("current_user", userModel)
 
 		c.Next()
 	}
