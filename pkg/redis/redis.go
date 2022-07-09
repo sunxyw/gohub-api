@@ -156,3 +156,38 @@ func (rds RedisClient) Decrement(parameters ...interface{}) bool {
 	}
 	return true
 }
+
+// HGetAll 获取 hash 对应的所有 key 和 value
+func (rds RedisClient) HGetAll(key string) map[string]string {
+	result, err := rds.Client.HGetAll(rds.Context, key).Result()
+	if err != nil {
+		logger.ErrorString("Redis", "HGetAll", err.Error())
+		return nil
+	}
+	return result
+}
+
+// HMGet 获取 hash 对应的多个 key 对应的 value
+func (rds RedisClient) HMGet(key string, fields ...string) []string {
+	result, err := rds.Client.HMGet(rds.Context, key, fields...).Result()
+	if err != nil {
+		logger.ErrorString("Redis", "HMGet", err.Error())
+		return nil
+	}
+
+	var values []string
+	for _, v := range result {
+		values = append(values, v.(string))
+	}
+	return values
+}
+
+// SMembers 获取 set 对应的所有元素
+func (rds RedisClient) SMembers(key string) []string {
+	result, err := rds.Client.SMembers(rds.Context, key).Result()
+	if err != nil {
+		logger.ErrorString("Redis", "SMembers", err.Error())
+		return nil
+	}
+	return result
+}
